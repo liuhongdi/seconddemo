@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>测试秒杀功能</title>
+</head>
+<body>
+
+<div style="width:1000px;background: #eeeeee;position: relative;">
+
+    <div style="position: absolute;width:490px;height:200px;top:0px;">
+        <input type="text" name="actid" id="actid" placeholder="活动的id" /><br/>
+        <input type="text" name="skuid" id="skuid" placeholder="sku的id" /><br/>
+        <input type="text" name="amount" id="amount" placeholder="sku库存数" /><br/>
+        <input type="button" id="set_redis_amount"  value="添加秒杀sku" onclick="set_sku_amount()" />
+    </div>
+
+</div>
+<script src="https://cdn.bootcss.com/jquery/1.11.3/jquery.js"></script>
+<script>
+       function set_sku_amount() {
+           //alert('开始设置redis库存');
+
+           if ($("#actid").val() == "") {
+               alert('actid is empty');
+               $("#actid").focus();
+               return false;
+           }
+
+           if ($("#skuid").val() == "") {
+               alert('skuid is empty');
+               $("#skuid").focus();
+               return false;
+           }
+
+           if ($("#amount").val() == "") {
+               alert('amount is empty');
+               $("#amount").focus();
+               return false;
+           }
+
+
+           var url_param = "actid="+$("#actid").val()+"&skuid="+$("#skuid").val();
+               url_param += "&amount="+$("#amount").val();
+
+           $.ajax({
+               cache: true,
+               type: "GET",
+               url: "/second/skuadd/?"+url_param,
+               data:{},
+               dataType: "json",
+               async: true,
+               error: function (request) {
+                   alert("connect error");
+                   console.log("Connection error");
+               },
+               success: function (data) {
+                   if (data.status == "0") {
+                       alert("success:"+data.msg);
+                   } else {
+                       alert("failed:"+data.msg);
+                   }
+               }
+           });
+       }
+
+</script>
+</body>
+</html>
